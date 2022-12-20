@@ -16,9 +16,12 @@ helper(result(drop, S)):-
     station(X, Y).
 
 goal(result(A, S)):-
-    call_with_depth_limit(helper(result(A, S)), 13, _).
-
+    ids(A,S,0).
 
 deleteFromList(A, [A|B], B).
     deleteFromList(A, [B, C|D], [B|E]) :-
         deleteFromList(A, [C|D], E).
+
+ids(A,S,L):-
+    (call_with_depth_limit(helper(result(A,S)),L,R), number(R));
+    (call_with_depth_limit(helper(result(A,S)),L,R), R=depth_limit_exceeded,L1 is L+1, ids(A,S,L1)).
