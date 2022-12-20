@@ -1,28 +1,24 @@
 :- include('KB.pl').
 
-%result(_,s0).
+agent(X,Y,L,C,s0):-
+    agent_loc(X,Y),ships_loc(L),capacity(C).
 
-agent(0,1,[[2,2],[1,2]],1,result(up,s0)).
-agent(X,Y,L,C,result(A,S)) :- 
-       ( agent(X,Y,L,C,result(A,S)), 
-        (A = up, (X=0)) ;
-        (A = down, (X=2));
-        (A = left, (Y=0));
-        (A = right, (Y=2)) ;
-        (A = pickup,not(member([X,Y], L));C=0);
-        (A = drop,not(station(X,Y)),capacity(C))
-    )
-        ;
-        (agent(X2,Y,L,C,result(A, S)), A = up, X > 0, X2 is X-1);
-        (agent(X2,Y,L,C,result(A, S)), A = down, X < 2, X2 is X+1);
-        (agent(X,Y2,L,C,result(A, S)), A = left, Y > 0, Y2 is Y-1);
-        (agent(X,Y2,L,C,result(A, S)), A = right, Y < 2, Y2 is Y+1);
-        (agent(X,Y,L2,C2,result(A, S)), A = pickup,member([X,Y], L),C>0, C2 is C-1,delete((L),[X,Y], L2));
-        (agent(X,Y,L2,C2,result(A, S)), A = drop,station(X,Y),not(capacity(C)),capacity(C2)).
+agent(X2,Y2,L,C,result(A,S)) :-
+        (agent(X,Y,L,C,S), A = up, X > 0, X2 is X-1 , Y2 = Y);
+        (agent(X,Y,L,C,S), grid(M,_),A = down, X < M, X2 is X+1 , Y2 = Y);
+        (agent(X,Y,L,C,S), A = left, Y > 0, Y2 is Y-1 , X2 = X);
+        (agent(X,Y,L,C,S),grid(_,N),A = right, Y < N, Y2 is Y+1 , X2 = X);
+        (agent(X,Y,L2,C2,S), A = pickup,member([X,Y], L2),C2>0, C is C2-1,deleteFromList([X,Y],L2, L), X2 = X, Y2 = Y);
+        (agent(X,Y,L,C2,S), A = drop,station(X,Y),capacity(C),C2 \== C ,X2 = X ,Y2 = Y).
 
-    goal(S) :- capacity(C), agent(X,Y,L,C,S),L = [].
+helper(result(drop, S)):-
+    agent(X, Y, [], _, S),
+    station(X, Y).
 
-ids(X,Y,L,C,S,Li):-
-(call_with_depth_limit(agent(X,Y,L,C,S),Li,R), number(R));
-(call_with_depth_limit(agent(X,Y,L,C,S),Li,R), R=depth_limit_exceeded,
-L1 is Li+1, ids(X,Y,L,C,S,L1)).
+goal(result(A, S)):-
+    call_with_depth_limit(helper(result(A, S)), 13, _).
+
+
+deleteFromList(A, [A|B], B).
+    deleteFromList(A, [B, C|D], [B|E]) :-
+        deleteFromList(A, [C|D], E).
