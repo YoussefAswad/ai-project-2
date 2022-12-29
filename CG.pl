@@ -1,4 +1,4 @@
-:- include('KB.pl').
+:- include('KB2.pl').
 
 agent(X,Y,L,C,s0):-
     agent_loc(X,Y),ships_loc(L),capacity(C).
