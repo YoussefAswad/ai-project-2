@@ -7,8 +7,8 @@
   - [2.2. When the action is **pickup**](#22-when-the-action-is-pickup)
   - [2.3. When the action is **drop**](#23-when-the-action-is-drop)
 - [3. Test Cases](#3-test-cases)
-  - [KB.pl](#kbpl)
-  - [KB2.pl](#kb2pl)
+  - [3.1. KB.pl](#31-kbpl)
+  - [3.2. KB2.pl](#32-kb2pl)
 
 
 # 1. Fluent used
@@ -33,7 +33,7 @@ we chech wether the loaction of the coast gauard boat is contained in the list o
 we check wether we are in the same location as the station, wether we are holding any passenfers to drop, and the capacity is reset to the original defined in the KB
 
 # 3. Test Cases
-## KB.pl
+## 3.1. KB.pl
 1. goal(S).
     - Result: S = result(drop, result(up, result(left, result(pickup, result(down, result(right, result(drop, result(left, result(pickup, result(down, result(right, s0)))))))))))
     - Time: 65.02 sec
@@ -43,7 +43,7 @@ we check wether we are in the same location as the station, wether we are holdin
 3. goal(result(up,result(down,s0))).
     - Result: false..
     - Time: 0 sec
-## KB2.pl
+## 3.2. KB2.pl
 1. goal(S).
     - Result: S = result(drop, result(up, result(up, result(left, result(pickup, result(down, result(down, result(pickup, result(down, s0))))))))) .
     - Time: 2.35 sec
